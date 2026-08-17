@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <script src="/userProtect.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    
+    <style>
+      #waitASL{
+        display: none;
+      }
+      #badASL{
+        display: none;
+      }
+      #woordId{
+        font-size: 10em !important;
+      }
+    </style>
+</head>
+
+<body>
+ 
+  <div class="container-fluid">
+    <div class="row justify-content-center">
+
+      <div class="col-md-12">      
+        <div class="d-flex justify-content-center align-items-center">
+          <h1 id="woordId">Glos hier</h1>
+
+        </div>
+            
+                        
+        <div class="row">
+          <div class="col-md-9">
+            <!-- Video with ID "videoName" -->
+            <video id="signbankVideo" class="w-100 vh-50" controls autoplay loop>
+            </video>
+          </div>  
+
+          <div class="col-md-6">
+            <!-- DIV with name "3dView" -->
+            <div id="3dView" class="p-3">
+              <!-- Add content for 3D view here -->
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <!-- Video with ID "videoName" -->
+           <div id="captureStatus">
+   
+           </div>
+          </div>
+
+          <div class="col-md-6">
+            <!-- DIV with name "3dView" -->
+            <div id="captureResult"></div>
+
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+
+<div class="modal fade bd-example-modal-lg " id="selectUsers" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 100%;">
+    <div class="modal-content">
+      <div class="container">
+        <h2>Welke gebruiker ben je?</h2>
+        <select class="form-select" aria-label="Select Menu" id="selectUsersMenu">
+        </select>
+      </div>
+      <div class="container">
+        <h2>Welke thema wil je opnemen?</h2>
+        <select class="form-select" aria-label="Select Menu" id="selectThemaMenu">
+        </select>
+      </div>
+       <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="ophalenData()">Beginnen</button>
+  </div>
+    </div>
+   
+</div>
+</div>
+</body>
+
+</html>
+
+
+
+
+<script>
+    //   $(document).ready(function(){
+
+    //   $("#selectUsers").modal({
+
+    //   });
+    //   $("#selectUsers").modal('show');
+    // });
+
+          document.body.style.backgroundColor = "red";
+          const urlParams = new URLSearchParams(window.location.search);
+
+  var woordId;
+  var glosName;
+  capturedDone = "nee";
+  var thema = urlParams.get('thema');
+  var glos;
+  var getunrealtake;
+
+  console.log(thema)
+
+const socket = new WebSocket('wss://leffe.science.uva.nl:8043/unrealServer/');
+
+var isCapturing = false;
+
+
+// Event listener for WebSocket connection open
+socket.addEventListener('open', (event) => {
+    console.log('WebSocket connection opened');
+
+    //send an json array to server
+    socket.send(JSON.stringify({
+        handler: "greet",
+        data: "Hello from the client!"
+    }));
+    //change background color
+    document.body.style.backgroundColor = "white";
+    //activate ophalenData
+    // setInterval(ping, 1000); // 1000 milliseconds = 1 second
+
+});
+
+
+// Event listener for WebSocket messages
+socket.addEventListener('message', (event) => {
+    console.log('Message from server:', event.data);
+
+    var data = JSON.parse(event.data);
+
+
+    if(data.handler == "glosName")
+    {
+      console.log(data.handler)
+
+      //save the glosName to database
+      getunrealtake = data.glosName;
+      updateData(data.glosName)
+
+    }
+
+});
+
+
+
+
+// Define a variable to track the current state
+
+// Event listener for key presses on the document
+document.addEventListener('keydown', function(event) {
+    var key = event.key.toLowerCase();
+
+    // Execute the corresponding function based on the pressed key
+    switch (key) {
+        case 'a':
+            // Toggle between start and stop
+            if (isCapturing) {
+                stopCapture();
+                isCapturing = false;
+            } else {
+                startCapture();
+                isCapturing = true;
+            }
+            break;
+        case 'b':
+          if(isCapturing)
+          {
+            exportLevelSequenceName() 
+          }
+            break;
+        case 'c':
+        if(isCapturing)
+          {
+            updateData("skip");
+          }
+            break;
+        case 'r':
+        if(isCapturing)
+          {
+            replayCapture();
+          }
+        break;
+        default:
+            // Ignore other keys
+            break;
+    }
+});
+
+
+function startCapture(){
+  console.log("startCapture")
+  socket.send(JSON.stringify({
+        handler: "startCapture",
+        data: "startCapture"
+    }));
+}
+
+function stopCapture(){
+  console.log("stopCapture")
+  socket.send(JSON.stringify({
+        handler: "stopCapture",
+        data: "stopCapture"
+    }));
+}
+
+function exportLevelSequenceName(){
+  console.log("exportLevelSequenceName")
+  socket.send(JSON.stringify({
+        handler: "exportLevelSequenceName",
+        data: "exportLevelSequenceName"
+    }));
+}
+
+
+function replayCapture(){
+  console.log("replayCapture")
+  socket.send(JSON.stringify({
+        handler: "replayCapture",
+        data: "replayCapture"
+    }));
+}
+
+
+function broadcastGlos(glosText){
+  console.log("broadcastGlos")
+  socket.send(JSON.stringify({
+        data: "broadcastGlos",
+        glos: glosText
+    }));
+}
+
+
+function updateData(getunrealtake){
+  var formData = new FormData();
+formData.append("glos", glos);
+
+formData.append("unrealTake", getunrealtake);
+
+        console.log(glos,getunrealtake)
+        console.log(formData)
+
+        fetch('save_fbx_studio.php?formdata=' + formData, {
+          method: 'POST',
+          body: formData,
+        }).then(response => response.json())
+          .then(data => {
+
+            ophalenData(userId)
+            console.log(data)
+            if (data.success) {
+              console.log(data)
+
+            } else {
+              console.log(data.error)
+            }
+          }).catch(function (error) {
+            console.error('Error:', error);
+          });
+
+}
+
+
+ophalenData(userId); 
+
+function ophalenData(userId) {
+
+$("#signbankVideoDiv").css("width", "100%");
+
+
+// $("#selectUsers").modal('hide');
+
+$("#myVideo1").hide();
+
+userId = $("#selectUsersMenu").val();//FUCKING STRING IN PLAATS VAN INTEGER
+
+
+thema = $("#selectThemaMenu").val();//FUCKING STRING IN PLAATS VAN INTEGER
+
+ var thema = "politiek"
+var userId = "1"
+
+
+var stopLoop = false
+
+fetch(`fetch_all.php?limit=500&offset=0&thema=${thema}&handle=themaFilter`)
+  .then(response => response.json())
+  .then(data => {
+    console.log(data)
+
+    var i = 0;
+    data.forEach(item => {
+        i++;
+      if(!stopLoop)
+      {
+
+      
+      // Process each element in the 'data' array here
+      //check if userid is in studopopnamewie
+    //   console.log(userId)
+
+        //now check if user already has made captures before in item.videoCenter
+        // console.log(item)
+
+        if(!item.unreal_take)
+{ 
+
+          //tonen glos
+
+              $("#woordId").text(item.glos)
+          //tonen zelfopname uit array
+          //checken of het wel array is
+        //   console.log("zelfopname")
+            var zelfopname;
+          //first check if there is signbank opname TEMP
+          if(item.zelfopname == "" || item.zelfopname == "[]")
+          {
+            zelfopname = item.glos+".mp4"
+            // console.log(zelfopname +"van signbank")
+          }
+          else
+          {
+          
+          try{
+         zelfopname = JSON.parse(item.zelfopname);
+          if(!Array.isArray(zelfopname))
+          {
+            // eslint-disable-next-line no-self-assign
+            zelfopname = zelfopname;
+          }
+          else
+          {
+            if(zelfopname != "")
+            {
+                // console.log(zelfopname)
+            //pakt eerste zelfopname voorlopig: TODO: mogelijkheid om verschillende zelfopnaes te tonen
+            zelfopname = zelfopname[0];
+            }
+            else{
+                zelfopname = item.glos+".mp4"
+            }
+
+          }
+          }
+          catch (error) {
+            zelfopname = [""];
+            //skip to next item
+    //   stopLoop = false
+        } 
+      }
+              $("#videoContainer").hide();
+        $("#officeVideoDiv").hide();
+          $("#videoRow").show();
+
+        //tonen zelfopname in videoelement
+        var videoElement = document.getElementById('signbankVideo');
+
+        // Set the new src attribute
+
+        //tijdelikj voor asl glosses
+        // zelfopname = zelfopname.replace(".mp4", ".webm");
+        videoElement.src = "../uploads/"+zelfopname;
+
+        // Load the new video source
+        videoElement.load();
+
+        // Play the video
+        videoElement.play(); //tijdelijk
+
+        //voor update array
+      glos = item.id;
+      broadcastGlos(item.glos)
+      stopLoop = true
+    
+    }
+
+
+    
+
+  }      
+
+  })
+ 
+  camerasReconnectStartupRunning = 0;
+
+}) .catch(error => {
+    // Handle any errors that may occur during the fetch
+    console.error('Error:', error);
+  });}
+
+
+
+
+fetch('fetch_data.php', {
+  method: 'GET',
+}).then(response => response.json())
+  .then(data => {
+    if (data) {
+      data.forEach(item => {
+        var option = document.createElement("option");
+        option.text = item.user;
+        option.value = item.userid;
+        document.getElementById("selectUsersMenu").add(option);
+      });
+    }
+  }).catch(function (error) {
+    console.error('Error:', error);
+  });
+
+
+  //fetch data from php and add themas to selectThemaMenu
+
+      fetch('uniqueThema.php')
+      .then(response => response.json())
+      .then(data => {
+        const select = document.getElementById('selectThemaMenu');
+        data.forEach(thema => {
+          const option = document.createElement('option');
+          option.value = thema;
+          option.textContent = thema;
+          select.appendChild(option);
+        });
+      })
+      .catch(error => console.error('Error fetching thema data:', error));
+
+
+var  userId = sessionStorage.getItem('userId')
+
+</script>
