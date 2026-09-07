@@ -1,10 +1,15 @@
 <?php
+
+// signcollect-lib's install-root resolver: sc_path(), sc_dir(), sc_root().
+// Vendored shim - it finds /web/lib/paths.php, or falls back to /web.
+require_once __DIR__ . '/sc_paths.php';
+
 header('Content-Type: application/json');
 set_time_limit(600);
 
 require_once 'mysql_config.php';
 
-$postDir = '/web/gebarenoverleg_media/studioFilesMini/post/';
+$postDir = sc_dir('media_post');
 
 try {
     $conn = new mysqli($servername, $username, $password, $database);
