@@ -1,11 +1,15 @@
 <?php
 
+// signcollect-lib's install-root resolver: sc_path(), sc_dir(), sc_root().
+// Vendored shim - it finds /web/lib/paths.php, or falls back to /web.
+require_once __DIR__ . '/sc_paths.php';
+
 include('../mysql_config.php');
 $conn = new mysqli($servername, $username, $password, $database);
 
 //for now we want to get filelist from /web/gebarenoverleg_media/fbx fbx filelist, from november 1st 2024 on, then get basename and look in form_data for matching glos then update unreal_take
 
-$directory = '/web/gebarenoverleg_media/fbx';
+$directory = sc_path('media_fbx');
 $filelist = array_filter(glob($directory . '/*.{glb}', GLOB_BRACE), function($file) {
     return filemtime($file) >= strtotime('2024-11-01');
 });
