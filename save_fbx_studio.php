@@ -2,6 +2,31 @@
 header('Content-Type: application/json');
 
 include('../mysql_config.php');
+require_once __DIR__ . '/sc_paths.php';   // loads signcollect-lib, and so sc_env(), when installed
+
+// A setting from the environment, else from the env file signcollect-lib's
+// sc_env() reads (/web/.env), else $default. signlab_signcollect-stack#23.
+$legacySetting = function ($key, $default) {
+    $value = getenv($key);
+    if (is_string($value) && $value !== '') {
+        return $value;
+    }
+    if (function_exists('sc_env')) {
+        try {
+            $vars = sc_env();
+            if (isset($vars[$key]) && $vars[$key] !== '') {
+                return $vars[$key];
+            }
+        } catch (RuntimeException $e) {
+            // No env file: use the default.
+        }
+    }
+    return $default;
+};
+// This script was written for the retired leffe host, whose docroot was
+// /var/www/html. The default is that old literal, so behaviour is unchanged
+// when SC_LEGACY_WEB_ROOT is unset.
+$legacyWebRoot = rtrim($legacySetting('SC_LEGACY_WEB_ROOT', '/var/www/html'), '/');
 $glos = isset($_POST['glos']) ? $_POST['glos'] : null;
 $userId = isset($_POST['userid']) ? $_POST['userid'] : null;
 $capturedStatus = isset($_POST['captured_status']) ? intval($_POST['captured_status']) : 1;
@@ -60,7 +85,7 @@ $response = array("success" => $glos);
 
 //for now we want to get filelist from /web/gebarenoverleg_media/fbx fbx filelist, from november 1st 2024 on, then get basename and look in form_data for matching glos then update unreal_take
 
-$directory = '/var/www/html/gebarenoverleg_media/fbx';
+$directory = $legacyWebRoot . '/gebarenoverleg_media/fbx';
 $filelist = array_filter(glob($directory . '/*.{glb}', GLOB_BRACE), function($file) {
     return filemtime($file) >= strtotime('2024-11-01');
 });

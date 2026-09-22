@@ -22,6 +22,7 @@ No build step. The listing endpoints read paths relative to the CWD, so call the
 ## Configuration
 - `../mysql_config.php` (docroot, not in git).
 - Vendored `sc_paths.php` (edit it in signcollect-lib, not here).
+- `SC_LEGACY_WEB_ROOT` (env or `/web/.env`, default `/var/www/html`): where `save_fbx_studio.php` looks for GLBs.
 
 ## Dependencies
 - MySQL `admin_gebarenoverleg`: `mocap_data`, `captures`, `mocap_files`.
