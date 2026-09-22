@@ -1,29 +1,34 @@
 # signlab_mocapStudio
-Recording-session UI for the mocap studio: shows the next item to sign, drives the Unreal recorder and logs every take.
+The page used during a mocap recording session. It shows the next item to sign, controls the Unreal recorder and logs every recording.
 
 ## What it does
-- `3dOpname_test.html` (the live page despite its name): modes Glosses, HH, Sentences, BAK, Capture List; Babylon.js preview, Manual Sync button.
-- `3dOpname.html`: older version, still points at `wss://leffe.science.uva.nl:8043/unrealServer/`.
-- `unrealServer/server.js`: `ws` relay on port 3002 that forwards `startCapture`/`stopCapture`/`replayCapture` to the Unreal client.
-- PHP endpoints (JSON/MySQL): `get{Zinnen,Teksten,BakLabels}.php`, `logMocapRecording.php`, `getMocapStats.php`, `update{Zin,Tekst,Bak}Mocap.php`, `{check,reencode}ZinVideos*.php`, `test_duplicates.php`.
-- `triggerSync.php`: same-origin proxy to viconSync's control port `127.0.0.1:8765`.
+- `3dOpname_test.html` is the live page, despite its name. Modes: Glosses, HH, Sentences, BAK and Capture List. It has a Babylon.js preview and a Manual Sync button.
+- `3dOpname.html` is an older version. It still connects to `wss://leffe.science.uva.nl:8043/unrealServer/`.
+- `unrealServer/server.js` is a `ws` relay on port 3002. It passes `startCapture`, `stopCapture` and `replayCapture` to the Unreal client.
+- PHP endpoints (JSON, MySQL): `get{Zinnen,Teksten,BakLabels}.php`, `logMocapRecording.php`, `getMocapStats.php`, `update{Zin,Tekst,Bak}Mocap.php`, `{check,reencode}ZinVideos*.php`, `test_duplicates.php`.
+- `triggerSync.php` forwards same-origin requests to the viconSync control port `127.0.0.1:8765`.
+- `lab/` holds the endpoints and reference media the page calls as `../mocap_lab/`. It used to be signlab_mocap_lab. See `lab/README.md`.
 
 ## Where it runs
-core (production): `/web/mocapStudio`, https://signcollect.nl/mocapStudio/3dOpname_test.html. Demo: dev2 `/web/mocapStudio`, dev-1 `/srv/signcollect/web/mocapStudio`.
+Core server: `/web/mocapStudio`, https://signcollect.nl/mocapStudio/3dOpname_test.html.
+Demo hosts: dev2 `/web/mocapStudio`, dev-1 `/srv/signcollect/web/mocapStudio`. On demo hosts `<docroot>/mocap_lab` is a symlink to `mocapStudio/lab`.
 
 ## Status
-production
+Production.
 
 ## How to run / deploy
-Deployed by the stack (repos.tsv row `mocapStudio`): https://github.com/Amsterdam-Humanities-Labs/signlab_signcollect-stack
-No build step. The relay is not started by the deploy: `npm i ws && node unrealServer/server.js`.
+[signlab_signcollect-stack](https://github.com/Amsterdam-Humanities-Labs/signlab_signcollect-stack) deploys it (`repos.tsv` row `mocapStudio`). Its `host-bootstrap.sh` creates the `mocap_lab` symlink.
+There is no build step. The deploy does not start the relay; start it by hand:
+```bash
+npm i ws && node unrealServer/server.js
+```
 
 ## Configuration
-- `mysql_config.php` (not in git) next to the endpoints; the deploy symlinks the webroot copy here. Template: `mysql_config.example.php`.
-- `sc_paths.php`: vendored signcollect-lib resolver; do not edit this copy.
+- `mysql_config.php` (not in git) sits next to the endpoints. The deploy symlinks the docroot copy here. Template: `mysql_config.example.php`.
+- `sc_paths.php` is the path resolver copied from signcollect-lib. Do not edit this copy.
 
 ## Dependencies
-- MySQL `admin_gebarenoverleg`: `mocap_recording_logs`, `sentences`, `matched_transcriptions`, `captures`, BAK label tables.
-- signlab_mocap (`../mocap/getCaptures.php`, `fetch_all.php`, `opnameLijst.html`) and `lab/` (was signlab_mocap_lab; served as `../mocap_lab/*` via a symlink: images, topics, gloss videos, FBX save).
-- signlab_viconSync control server on `127.0.0.1:8765`; `ffmpeg`/`ffprobe`; Node.js + `ws`; `/userProtect.js` at the docroot.
-- Not in any repo: `../mocap_lab/helpScripts/emptyVideoTop.php` and `/jari/BabylonSignLab/*` (now forked as signlab_BabylonSignLab).
+- MySQL `admin_gebarenoverleg`: `mocap_recording_logs`, `sentences`, `matched_transcriptions`, `captures` and the BAK label tables.
+- [signlab_mocap](https://github.com/Amsterdam-Humanities-Labs/signlab_mocap): `../mocap/getCaptures.php`, `fetch_all.php`, `opnameLijst.html`.
+- The [signlab_viconSync](https://github.com/Amsterdam-Humanities-Labs/signlab_viconSync) control server on `127.0.0.1:8765`, `ffmpeg` and `ffprobe`, Node.js with `ws`, and `/userProtect.js` at the docroot.
+- Missing from every repo: `../mocap_lab/helpScripts/emptyVideoTop.php`, and the `jari/BabylonSignLab/*` scripts. The page loads those relative to itself (`/mocapStudio/jari/...`), which returns 404 on production; the copy at `/jari/BabylonSignLab/` is now [signlab_BabylonSignLab](https://github.com/Amsterdam-Humanities-Labs/signlab_BabylonSignLab).
