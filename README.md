@@ -24,6 +24,6 @@ No build step. The relay is not started by the deploy: `npm i ws && node unrealS
 
 ## Dependencies
 - MySQL `admin_gebarenoverleg`: `mocap_recording_logs`, `sentences`, `matched_transcriptions`, `captures`, BAK label tables.
-- signlab_mocap (`../mocap/getCaptures.php`, `fetch_all.php`, `opnameLijst.html`) and signlab_mocap_lab (`../mocap_lab/*`: images, topics, gloss videos, FBX save).
+- signlab_mocap (`../mocap/getCaptures.php`, `fetch_all.php`, `opnameLijst.html`) and `lab/` (was signlab_mocap_lab; served as `../mocap_lab/*` via a symlink: images, topics, gloss videos, FBX save).
 - signlab_viconSync control server on `127.0.0.1:8765`; `ffmpeg`/`ffprobe`; Node.js + `ws`; `/userProtect.js` at the docroot.
-- Not in any repo: `../mocap_lab/helpScripts/emptyVideoTop.php` and `/jari/BabylonSignLab/*`.
+- Not in any repo: `../mocap_lab/helpScripts/emptyVideoTop.php` and `/jari/BabylonSignLab/*` (now forked as signlab_BabylonSignLab).
