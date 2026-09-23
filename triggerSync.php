@@ -1,6 +1,6 @@
 <?php
 /**
- * Same-origin proxy for the Manual Sync button on 3dOpname_test.html.
+ * Same-origin proxy for the Manual Sync button on capture.html.
  *
  * Hides the shared secret from client-side JS by forwarding the request
  * to /vicon_sync.php server-side.
