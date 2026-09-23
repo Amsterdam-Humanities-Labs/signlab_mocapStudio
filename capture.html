@@ -965,6 +965,7 @@
         }
 
         function broadcastGlos(glosText) {
+            if (!glosText) return; // nothing left to record: no gloss to announce
 
             // Sanitize the glosText: replace spaces with underscores and remove special characters
             const sanitizedGlosText = glosText.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
