@@ -406,16 +406,16 @@
     </div>
 
     <!-- Existing Scripts -->
-    <script src="jari/BabylonSignLab/LoadingAnimation/SceneAndMeshLoader.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/animFetchAndDestroy.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/playAnims.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/ScreenRecorder.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/signCollectLoader.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/cameraController.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/noiseGenerator.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/signBuilder.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/retargetAnims.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/initialize.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/SceneAndMeshLoader.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/animFetchAndDestroy.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/playAnims.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/ScreenRecorder.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/signCollectLoader.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/cameraController.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/noiseGenerator.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/signBuilder.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/retargetAnims.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/initialize.js"></script>
 
     <script>
         // URL params for gloss, thema, cameraAngle, movingCamera (followed by an example comment)
@@ -443,7 +443,7 @@
         var UELocalMode = urlParams.get("uelocalmode") // uelocalmode=1 or true, for if you want wait for ue server to send new animations
 
         const basePath = "https://signcollect.nl/gebarenoverleg_media/fbx/";
-        const basePathMesh = "jari/BabylonSignLab/LoadingAnimation/MeshesAndAnims/";
+        const basePathMesh = "/jari/BabylonSignLab/LoadingAnimation/MeshesAndAnims/";
         let engine, scene, canvas, loadedMesh, animAsset, recordingMethod, recordingFile;
         let keepAnimating = true, animations = [], isCapturing = false, busyExport = false, countPing = 0;
         var userId;
