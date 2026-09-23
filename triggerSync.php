@@ -2,14 +2,10 @@
 /**
  * Same-origin proxy for the Manual Sync button on capture.html.
  *
- * Hides the shared secret from client-side JS by forwarding the request
- * to /vicon_sync.php server-side.
+ * Forwards the request to the viconSync control server on 127.0.0.1:8765.
  */
 
 header('Content-Type: application/json');
-
-// Server-side secret — must match $SECRET in /web/vicon_sync.php
-$SECRET = 'scAmv5Ej3Lp19N1umVeuyabN1F7OrMJOBCCKXeTQw8eZGI3LCqwvQS85h5oL7SSM';
 
 $action = strtolower($_GET['action'] ?? 'trigger');
 if (!in_array($action, ['trigger', 'status'], true)) {
