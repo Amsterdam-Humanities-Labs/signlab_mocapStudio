@@ -4,7 +4,7 @@ PHP endpoints and reference media for the mocapStudio recording page. The page c
 ## What it does
 - `fetch_images.php` lists `meta_images/`. `fetch_topics.php` returns `topics.json`, a set of Dutch conversation prompts.
 - `generate_video_files.php` lists `lsc_videos/`. That folder is not in git and exists only on the server. The studio plays gloss videos from it.
-- `save_fbx_studio.php` marks a gloss as recorded in `mocap_data` and `captures`. `saveThree.php` flags three glosses (the `pineapple` column).
+- `save_fbx_studio.php` marks a gloss as recorded in `mocap_data` and `captures`.
 - `upload_video.php` stores a camera video under `../gebarenoverleg_media/mocap_video/<camera>/`. `test_fbx_sql.php` is a one-off test script.
 - Media in git: `meta_images/` (58 photos), `csl_images/` (41 diagrams), `mocap_videos/` (18 clips, the fallback for playback).
 - There is no index page, so the bare folder URL returns an error (500 on the core server, 403 on demo hosts). The studio also fetches `helpScripts/emptyVideoTop.php`, which no repo contains.

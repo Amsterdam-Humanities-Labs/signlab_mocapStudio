@@ -1156,23 +1156,6 @@
                     }
                 }).catch(error => console.error('Error:', error));
 
-            if(three == "1")
-            {
-
-                const formData = new FormData();
-                formData.append("glos1", glos1);
-                formData.append("glos2", glos2);
-                formData.append("glos3", glos3);
-
-                fetch(`../mocap_lab/saveThree.php`, {
-                    method: 'POST',
-                    body: formData,
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data)
-                    })
-            }
         }
 
         var glos1;
@@ -2045,21 +2028,6 @@
                         reject(error);
                     });
 
-                if(three == "1") {
-                    const formData = new FormData();
-                    formData.append("glos1", glos1);
-                    formData.append("glos2", glos2);
-                    formData.append("glos3", glos3);
-
-                    fetch(`../mocap_lab/saveThree.php`, {
-                        method: 'POST',
-                        body: formData,
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log(data)
-                        })
-                }
             });
         }
 
