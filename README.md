@@ -2,15 +2,15 @@
 The page used during a mocap recording session. It shows the next item to sign, controls the Unreal recorder and logs every recording.
 
 ## What it does
-- `3dOpname_test.html` is the live page, despite its name. Modes: Glosses, HH, Sentences, BAK and Capture List. It has a Babylon.js preview and a Manual Sync button.
+- `capture.html` is the live page. It used to be `3dOpname_test.html`; that name now redirects here. Modes: Glosses, HH, Sentences, BAK and Capture List. It has a Babylon.js preview and a Manual Sync button.
 - `3dOpname.html` is an older version. It still connects to `wss://leffe.science.uva.nl:8043/unrealServer/`.
 - `unrealServer/server.js` is a `ws` relay on port 3002. The page connects to it as `wss://signcollect.nl/unrealServer/`. It passes `startCapture`, `stopCapture` and `replayCapture` to the Unreal client.
-- PHP endpoints (JSON, MySQL): `get{Zinnen,Teksten,BakLabels}.php`, `logMocapRecording.php`, `getMocapStats.php`, `update{Zin,Tekst,Bak}Mocap.php`, `{check,reencode}ZinVideos*.php`, `test_duplicates.php`.
+- PHP endpoints (JSON, MySQL): `get{Zinnen,Teksten,BakLabels}.php`, `logMocapRecording.php`, `getMocapStats.php`, `update{Zin,Tekst,Bak}Mocap.php`, `{check,reencode}ZinVideos*.php`, `getDuplicateZinTakes.php` (sentences with more than one take; the old name `test_duplicates.php` is a stub).
 - `triggerSync.php` lets the page reach the viconSync control server without cross-origin calls. It forwards `?action=trigger` (POST) or `?action=status` to `127.0.0.1:8765`. It checks neither login nor origin.
 - `lab/` holds the endpoints and reference media the page calls as `../mocap_lab/`. It used to be signlab_mocap_lab. See `lab/README.md`.
 
 ## Where it runs
-Core server: `/web/mocapStudio`, https://signcollect.nl/mocapStudio/3dOpname_test.html.
+Core server: `/web/mocapStudio`, https://signcollect.nl/mocapStudio/capture.html.
 Demo hosts: dev2 `/web/mocapStudio`, dev-1 `/srv/signcollect/web/mocapStudio`. On demo hosts `<docroot>/mocap_lab` is a symlink to `mocapStudio/lab`.
 
 ## Status
