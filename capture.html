@@ -406,16 +406,16 @@
     </div>
 
     <!-- Existing Scripts -->
-    <script src="jari/BabylonSignLab/LoadingAnimation/SceneAndMeshLoader.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/animFetchAndDestroy.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/playAnims.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/ScreenRecorder.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/signCollectLoader.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/cameraController.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/noiseGenerator.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/signBuilder.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/retargetAnims.js"></script>
-    <script src="jari/BabylonSignLab/LoadingAnimation/initialize.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/SceneAndMeshLoader.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/animFetchAndDestroy.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/playAnims.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/ScreenRecorder.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/signCollectLoader.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/cameraController.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/noiseGenerator.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/signBuilder.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/retargetAnims.js"></script>
+    <script src="/jari/BabylonSignLab/LoadingAnimation/initialize.js"></script>
 
     <script>
         // URL params for gloss, thema, cameraAngle, movingCamera (followed by an example comment)
@@ -443,7 +443,7 @@
         var UELocalMode = urlParams.get("uelocalmode") // uelocalmode=1 or true, for if you want wait for ue server to send new animations
 
         const basePath = "https://signcollect.nl/gebarenoverleg_media/fbx/";
-        const basePathMesh = "jari/BabylonSignLab/LoadingAnimation/MeshesAndAnims/";
+        const basePathMesh = "/jari/BabylonSignLab/LoadingAnimation/MeshesAndAnims/";
         let engine, scene, canvas, loadedMesh, animAsset, recordingMethod, recordingFile;
         let keepAnimating = true, animations = [], isCapturing = false, busyExport = false, countPing = 0;
         var userId;
@@ -675,7 +675,9 @@
                 ParamsManager.setParams(0, "no", "1", "AAP", "", "0", "0", "1");
                 canvas = document.getElementById("renderCanvas");
 
-                if (!canvas) throw new Error("The canvas element is not available.");
+                // This page has no 3D view (only 3dOpname.html does); skip Babylon
+                // instead of throwing, as ?noBabylon=1 would.
+                if (!canvas) return;
 
                 initialize(scene, engine, canvas, basePath, basePathMesh, loadedMesh, '', '', '', "1", "0")
                     .then(([initializedScene, initializedEngine, initializedLoadedMesh]) => {
@@ -963,6 +965,7 @@
         }
 
         function broadcastGlos(glosText) {
+            if (!glosText) return; // nothing left to record: no gloss to announce
 
             // Sanitize the glosText: replace spaces with underscores and remove special characters
             const sanitizedGlosText = glosText.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');
@@ -1156,23 +1159,6 @@
                     }
                 }).catch(error => console.error('Error:', error));
 
-            if(three == "1")
-            {
-
-                const formData = new FormData();
-                formData.append("glos1", glos1);
-                formData.append("glos2", glos2);
-                formData.append("glos3", glos3);
-
-                fetch(`../mocap_lab/saveThree.php`, {
-                    method: 'POST',
-                    body: formData,
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data)
-                    })
-            }
         }
 
         var glos1;
@@ -1302,6 +1288,7 @@
                 .then(response => response.json())
                 .then(data => {
                     const select = document.getElementById(selectId);
+                    if (!select) return; // this page has no such menu
                     data.forEach(option => {
                         const opt = document.createElement('option');
                         if (selectId == "selectThemaMenu") {
@@ -1318,8 +1305,8 @@
                 .catch(error => console.error('Error fetching data:', error));
         }
 
-        fetchSelectOptions('fetch_data.php', 'selectUsersMenu');
-        fetchSelectOptions('uniqueThema.php', 'selectThemaMenu');
+        fetchSelectOptions('/studio_beta/lookups.php?what=users', 'selectUsersMenu');
+        fetchSelectOptions('/studio_beta/lookups.php?what=thema', 'selectThemaMenu');
 
         function leegVideos() {
             userId = $("#selectUsersMenu").val();
@@ -2045,21 +2032,6 @@
                         reject(error);
                     });
 
-                if(three == "1") {
-                    const formData = new FormData();
-                    formData.append("glos1", glos1);
-                    formData.append("glos2", glos2);
-                    formData.append("glos3", glos3);
-
-                    fetch(`../mocap_lab/saveThree.php`, {
-                        method: 'POST',
-                        body: formData,
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log(data)
-                        })
-                }
             });
         }
 
