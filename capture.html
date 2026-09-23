@@ -675,7 +675,9 @@
                 ParamsManager.setParams(0, "no", "1", "AAP", "", "0", "0", "1");
                 canvas = document.getElementById("renderCanvas");
 
-                if (!canvas) throw new Error("The canvas element is not available.");
+                // This page has no 3D view (only 3dOpname.html does); skip Babylon
+                // instead of throwing, as ?noBabylon=1 would.
+                if (!canvas) return;
 
                 initialize(scene, engine, canvas, basePath, basePathMesh, loadedMesh, '', '', '', "1", "0")
                     .then(([initializedScene, initializedEngine, initializedLoadedMesh]) => {
@@ -1301,8 +1303,8 @@
                 .catch(error => console.error('Error fetching data:', error));
         }
 
-        fetchSelectOptions('fetch_data.php', 'selectUsersMenu');
-        fetchSelectOptions('uniqueThema.php', 'selectThemaMenu');
+        fetchSelectOptions('/studio_beta/lookups.php?what=users', 'selectUsersMenu');
+        fetchSelectOptions('/studio_beta/lookups.php?what=thema', 'selectThemaMenu');
 
         function leegVideos() {
             userId = $("#selectUsersMenu").val();
