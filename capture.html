@@ -1287,6 +1287,7 @@
                 .then(response => response.json())
                 .then(data => {
                     const select = document.getElementById(selectId);
+                    if (!select) return; // this page has no such menu
                     data.forEach(option => {
                         const opt = document.createElement('option');
                         if (selectId == "selectThemaMenu") {
