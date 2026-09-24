@@ -33,3 +33,10 @@ npm i ws && node unrealServer/server.js
 - The [signlab_viconSync](https://github.com/Amsterdam-Humanities-Labs/signlab_viconSync) control server on `127.0.0.1:8765`, `ffmpeg` and `ffprobe`, Node.js with `ws`, and `/userProtect.js` at the docroot.
 - [signlab_BabylonSignLab](https://github.com/Amsterdam-Humanities-Labs/signlab_BabylonSignLab) at `/jari/BabylonSignLab/` (docroot): the avatar scripts and meshes `capture.html` loads.
 - Missing from every repo: `../mocap_lab/helpScripts/emptyVideoTop.php`. The page also fetches `fetch_data.php` and `uniqueThema.php` next to itself; neither is in this repo (a `uniqueThema.php` exists only at the docroot), so on a fresh deploy the user and theme menus stay empty.
+
+## License and citation
+
+Apache License 2.0, copyright University of Amsterdam: see [LICENSE](LICENSE) and
+[NOTICE](NOTICE). You may use it, also commercially, as long as you credit
+Gomer Otterspeer / University of Amsterdam as the source. To cite it, use
+[CITATION.cff](CITATION.cff) (the *Cite this repository* button on GitHub) or the DOI [10.21942/uva.33980353](https://doi.org/10.21942/uva.33980353).
